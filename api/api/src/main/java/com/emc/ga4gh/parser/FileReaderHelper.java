@@ -1,90 +1,51 @@
-package com.emc.ga4gh.searching;
+package com.emc.ga4gh.parser;
 
-import com.emc.ga4gh.DAO.ReadDAO;
 import com.emc.ga4gh.DTO.Read;
 import com.emc.ga4gh.model.*;
 import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
-import htsjdk.samtools.util.CloseableIterator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by liza on 15.04.15.
+ * Created by liza on 05.05.15.
  */
+public class FileReaderHelper {
 
-@Component
-public class ReadSearcher implements Searcher<GASearchReadsResponse, GASearchReadsRequest> {
+    private File file;
 
-    @Autowired
-    ReadDAO rd;
-
-    private File inputFile;
-    private static final Integer DEFAULT_PAGESIZE = 5;
-
-    public ReadSearcher(File file) {
-        this.inputFile = file;
+    public FileReaderHelper(File file) {
+        this.file = file;
     }
 
-    @Override
-    public GASearchReadsResponse search(GASearchReadsRequest request) {
-        SamReader samReader = SamReaderFactory.make().open(inputFile);
+    public ArrayList<GAReadAlignment> getReadAlignments(List<Read> metaReads) {
         ArrayList<GAReadAlignment> responseAlignments = new ArrayList<>();
-
-        List<String> readGroupIds = Arrays.asList(request.getReadGroupIds());
-        String referenceId = request.getReferenceId();
-        String referenceName = request.getReferenceName();
-        String ref;
-        if (referenceId == null) {
-            ref = referenceId;
-        } else {
-            ref = referenceName;
-        }
-
-        Long start = request.getStart();
-        if (start == null) {
-            start = (long) 0;
-        }
-        Long end = request.getEnd();
-
-        List<Read> reads = rd.findIncOrdered(referenceId, referenceName, start, end, readGroupIds);
-
-        long offset = 0;
-        for (Read read : reads) {
-            int nextReadsNumberInFile = read.getNumberInFile();
-            for (SAMRecord samRecord : samReader) {
-                if (offset == nextReadsNumberInFile) {
-                    GAReadAlignment alignment = parseSamRecord(samRecord);
-                    responseAlignments.add(alignment);
+        try (SamReader samReader = SamReaderFactory.make().open(file)) {
+            SAMRecordIterator iterator = samReader.iterator();
+            int i = 0;
+            for (Read metaRead : metaReads) {
+                SAMRecord samRecord = iterator.next();
+                i++;
+                while (i != metaRead.getNumberInFile()) {
+                    if (!iterator.hasNext()) {
+                        break;
+                    }
+                    samRecord = iterator.next();
+                    i++;
                 }
-                ++offset;
+                responseAlignments.add(parseSamRecord(samRecord));
             }
-        }
-
-        try {
-            samReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return new GASearchReadsResponse(
-                responseAlignments.toArray(new GAReadAlignment[responseAlignments
-                        .size()]), "");
-    }
-
-
-
-    private int[] byteArrayToIntArray(byte[] byteArray) {
-        int[] intArray = new int[byteArray.length];
-        for (int i = 0; i < byteArray.length; i++) {
-            intArray[i] = byteArray[i];
-        }
-        return intArray;
+        return responseAlignments;
     }
 
     private GAReadAlignment parseSamRecord(SAMRecord samRecord) {
@@ -139,6 +100,14 @@ public class ReadSearcher implements Searcher<GASearchReadsResponse, GASearchRea
                 byteArrayToIntArray(samRecord.getBaseQualities()),
                 nextMatePosition, info);
         return alignment;
+    }
+
+    private int[] byteArrayToIntArray(byte[] byteArray) {
+        int[] intArray = new int[byteArray.length];
+        for (int i = 0; i < byteArray.length; i++) {
+            intArray[i] = byteArray[i];
+        }
+        return intArray;
     }
 
     private GACigarOperation translate(String SAMCigarOperationName) {

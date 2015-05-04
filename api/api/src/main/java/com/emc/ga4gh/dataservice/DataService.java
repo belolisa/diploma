@@ -1,8 +1,8 @@
-package com.emc.ga4gh.server;
+package com.emc.ga4gh.dataservice;
 
 import com.emc.ga4gh.model.*;
 
-public interface Server {
+public interface DataService {
 
     public GAReference getReference(String id);
 

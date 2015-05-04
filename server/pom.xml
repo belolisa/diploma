@@ -6,7 +6,6 @@
     <artifactId>backend</artifactId>
     <version>1.1-SNAPSHOT</version>
     <modules>
-        <module>model</module>
         <module>server</module>
     </modules>
     <packaging>pom</packaging>
