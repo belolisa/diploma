@@ -37,7 +37,7 @@ public class ReadObjectDAO extends AbstractObjectDAO<Read> implements ReadDAO {
         if (referenceName != null) {
             builder.setObjectParameterEquals("referenceName", referenceName);
         }
-        builder.setOrder("numberInFile");
+        builder.setOrder("path ASC, numberInFile ASC");
 
         return querySelect(builder);
     }

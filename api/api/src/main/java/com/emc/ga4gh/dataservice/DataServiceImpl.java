@@ -4,7 +4,8 @@ import com.emc.ga4gh.DAO.ReadDAO;
 import com.emc.ga4gh.DTO.Read;
 import com.emc.ga4gh.fileStorage.FileStorage;
 import com.emc.ga4gh.model.*;
-import com.emc.ga4gh.parser.FileReaderHelper;
+import com.emc.ga4gh.parser.download.FileReaderHelper;
+import com.emc.ga4gh.parser.download.FileReaderHelperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,7 +76,7 @@ public class DataServiceImpl implements DataService {
 
         for (String path : pathReadsMap.keySet()) {
             File file = fs.getFile(path);
-            FileReaderHelper fileReaderHelper = new FileReaderHelper(file);
+            FileReaderHelper fileReaderHelper = new FileReaderHelperImpl(file);
             responseAlignments.addAll(fileReaderHelper.getReadAlignments(pathReadsMap.get(path)));
         }
 

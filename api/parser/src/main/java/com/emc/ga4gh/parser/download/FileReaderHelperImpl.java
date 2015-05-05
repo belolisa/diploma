@@ -1,4 +1,4 @@
-package com.emc.ga4gh.parser;
+package com.emc.ga4gh.parser.download;
 
 import com.emc.ga4gh.DTO.Read;
 import com.emc.ga4gh.model.*;
@@ -17,14 +17,15 @@ import java.util.Map;
 /**
  * Created by liza on 05.05.15.
  */
-public class FileReaderHelper {
+public class FileReaderHelperImpl implements FileReaderHelper {
 
     private File file;
 
-    public FileReaderHelper(File file) {
+    public FileReaderHelperImpl(File file) {
         this.file = file;
     }
 
+    @Override
     public ArrayList<GAReadAlignment> getReadAlignments(List<Read> metaReads) {
         ArrayList<GAReadAlignment> responseAlignments = new ArrayList<>();
         try (SamReader samReader = SamReaderFactory.make().open(file)) {
