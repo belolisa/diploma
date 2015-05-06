@@ -6,10 +6,10 @@ import java.io.File;
 
 public interface ParserService {
 
-    void parseSAM(File SAMFile);
-
     void parseBAM(File BAMFile);
 
     void parseVCF(File VCFFile);
+
+    void parseSATA(File SATAFile);
 
 }
