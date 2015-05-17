@@ -4,6 +4,7 @@ import com.emc.ga4gh.DAO.ReadDAO;
 import com.emc.ga4gh.DAO.ReferenceDAO;
 import com.emc.ga4gh.DAO.VariantDAO;
 import com.emc.ga4gh.DTO.Read;
+import com.emc.ga4gh.DTO.Variant;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
@@ -35,12 +36,12 @@ public class ParserServiceImpl implements ParserService {
             SamReader samReader = SamReaderFactory.make().open(SAMFile);
             int num = 0;
             for (SAMRecord samRecord : samReader) {
-                readDAO.create(getRead(num, samRecord));
+                readDAO.create(getRead(num, samRecord, SAMFile.getAbsolutePath()));
                 num++;
             }
     }
 
-    private Read getRead(int num, SAMRecord samRecord) {
+    private Read getRead(int num, SAMRecord samRecord, String path) {
         Read read = new Read();
         read.setNumberInFile(num);
         read.setReadGroupId(samRecord.getReadGroup().getId());
@@ -48,6 +49,7 @@ public class ParserServiceImpl implements ParserService {
         read.setAlignmentEnd(samRecord.getAlignmentEnd());
         read.setReferenceId(samRecord.getReferenceIndex());
         read.setReferenceName(samRecord.getReferenceName());
+        read.setPath(path);
         return read;
     }
 
@@ -56,8 +58,13 @@ public class ParserServiceImpl implements ParserService {
         VCFFileReader variantContexts = new VCFFileReader(VCFFile);
         int num = 0;
         for (VariantContext variantContext : variantContexts) {
+            variantDAO.create(getVariant(num, variantContext));
             num++;
         }
+    }
+
+    private Variant getVariant(int num, VariantContext variantContext) {
+        return null;
     }
 
     @Override

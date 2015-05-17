@@ -30,7 +30,7 @@ public class FileReaderHelperImpl implements FileReaderHelper {
         ArrayList<GAReadAlignment> responseAlignments = new ArrayList<>();
         try (SamReader samReader = SamReaderFactory.make().open(file)) {
             SAMRecordIterator iterator = samReader.iterator();
-            int i = 0;
+            int i = -1;
             for (Read metaRead : metaReads) {
                 SAMRecord samRecord = iterator.next();
                 i++;

@@ -57,12 +57,18 @@ public class DataServiceImpl implements DataService {
         List<String> readGroupIds = Arrays.asList(request.getReadGroupIds());
         String referenceId = request.getReferenceId();
         String referenceName = request.getReferenceName();
+
+
         Long start = request.getStart();
         if (start == null) {
             start = (long) 0;
         }
         Long end = request.getEnd();
-        List<Read> metaReads = readDAO.findIncOrdered(referenceId, referenceName, start, end, readGroupIds);
+//        List<Read> metaReads = readDAO.findIncOrdered(referenceId, referenceName, start, end, readGroupIds);
+        Integer pageSize = request.getPageSize();
+        Integer pageNumber = request.getPageToken() == null ? null : Integer.valueOf(request.getPageToken());
+        List<Read> metaReads = readDAO.findIncOrderedPage(referenceId, referenceName, start, end, readGroupIds, pageSize, pageNumber);
+
 
         Map<String, List<Read>> pathReadsMap = new HashMap<>();
         for (Read metaRead : metaReads) {
@@ -80,7 +86,7 @@ public class DataServiceImpl implements DataService {
             responseAlignments.addAll(fileReaderHelper.getReadAlignments(pathReadsMap.get(path)));
         }
 
-        return new GASearchReadsResponse((GAReadAlignment[]) responseAlignments.toArray(), "");
+        return new GASearchReadsResponse(responseAlignments.toArray(new GAReadAlignment[responseAlignments.size()]), "");
     }
 
     /*@Override
