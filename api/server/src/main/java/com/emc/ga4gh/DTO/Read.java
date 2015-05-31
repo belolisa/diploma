@@ -14,7 +14,7 @@ public class Read implements Entity {
     @Id
     private String rid;
 
-    private String path;
+    private FileEntity file;
 
     private String readGroupId;
 
@@ -29,13 +29,13 @@ public class Read implements Entity {
     private Integer referenceId;
 
     @Override
-    public String getPath() {
-        return path;
+    public FileEntity getFile() {
+        return file;
     }
 
     @Override
-    public void setPath(String path) {
-        this.path = path;
+    public void setFile(FileEntity file) {
+        this.file = file;
     }
 
     @Override
@@ -53,7 +53,6 @@ public class Read implements Entity {
         return "Read{" +
                 "version=" + version +
                 ", rid='" + rid + '\'' +
-                ", path='" + path + '\'' +
                 ", readGroupId='" + readGroupId + '\'' +
                 ", alignmentStart=" + alignmentStart +
                 ", alignmentEnd=" + alignmentEnd +
@@ -115,4 +114,5 @@ public class Read implements Entity {
     public Integer getReferenceId() {
         return referenceId;
     }
+
 }

@@ -6,9 +6,9 @@ package com.emc.ga4gh.DTO;
 
 public interface Entity {
 
-    String getPath();
+    FileEntity getFile();
 
-    void setPath(String path);
+    void setFile(FileEntity file);
 
     String getRid();
 

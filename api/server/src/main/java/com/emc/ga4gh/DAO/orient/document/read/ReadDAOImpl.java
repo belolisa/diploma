@@ -17,9 +17,7 @@ public class ReadDAOImpl extends AbstractDocumentDAO<Read> implements ReadDAO {
 
     @Override
     protected ODocument createDocument(Read newRead) {
-        ODocument document = new ODocument();
-        document.field("path", newRead.getPath());
-        return document;
+        return new ODocument();
     }
 
     @Log

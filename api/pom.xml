@@ -3,18 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.emc.ga4gh</groupId>
-    <artifactId>interface</artifactId>
+    <artifactId>diploma</artifactId>
     <version>1.1-SNAPSHOT</version>
     <modules>
         <module>model</module>
         <module>server</module>
         <module>parser</module>
-        <module>cli</module>
-        <module>api</module>
+        <module>indexingCli</module>
+        <module>indexing</module>
+        <module>searching</module>
     </modules>
     <packaging>pom</packaging>
 
-    <name>interface</name>
+    <name>diploma</name>
     <url>http://maven.apache.org</url>
 
     <properties>
